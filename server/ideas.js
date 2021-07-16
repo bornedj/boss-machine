@@ -1,7 +1,7 @@
 const express = require('express');
+const checkMillionDollarIdea = require('./checkMillionDollarIdea');
 const ideasRouter = express.Router();
 const { getAllFromDatabase, getFromDatabaseById, addToDatabase, updateInstanceInDatabase, deleteAllFromDatabase, deleteFromDatabasebyId } = require('./db');
-const minionRouter = require('./minions');
 
 // params 
 ideasRouter.param('ideaId', (req, res, next, id) => {
@@ -14,6 +14,9 @@ ideasRouter.param('ideaId', (req, res, next, id) => {
     next();
 })
 
+// check million dollar idea
+// ideasRouter.use(checkMillionDollarIdea);
+
 // get all ideas
 ideasRouter.get('/', (req, res, next) => {
     res.send(getAllFromDatabase('ideas'))
@@ -25,7 +28,7 @@ ideasRouter.get('/:ideaId', (req, res, next) => {
 })
 
 // post new idea
-ideasRouter.post('/', (req, res, next) => {
+ideasRouter.post('/', checkMillionDollarIdea, (req, res, next) => {
     //validate body data
     if (typeof(req.body.name) === 'string' && typeof(req.body.description) === 'string' 
     && typeof(req.body.numWeeks) === 'number' && typeof(req.body.weeklyRevenue) === 'number')
@@ -43,7 +46,7 @@ ideasRouter.post('/', (req, res, next) => {
 });
 
 // put idea by id
-ideasRouter.put('/:ideaId', (req, res, next) => {
+ideasRouter.put('/:ideaId', checkMillionDollarIdea, (req, res, next) => {
     if (req.idea) {
         const updatedIdea = req.idea;
         updatedIdea.name = req.body.name;
