@@ -1,6 +1,6 @@
 const express = require('express');
 const ideasRouter = express.Router();
-const { getAllFromDatabase, getFromDatabaseById, addToDatabase, updateInstanceInDatabase, deleteAllFromDatabase } = require('./db');
+const { getAllFromDatabase, getFromDatabaseById, addToDatabase, updateInstanceInDatabase, deleteAllFromDatabase, deleteFromDatabasebyId } = require('./db');
 const minionRouter = require('./minions');
 
 // params 
@@ -53,6 +53,14 @@ ideasRouter.put('/:ideaId', (req, res, next) => {
 
         const returnIdea = updateInstanceInDatabase('ideas', updatedIdea);
         res.send(returnIdea);
+    }
+})
+
+// delete idea by id
+ideasRouter.delete('/:ideaId', (req, res, next) => {
+    if (req.idea) {
+        deleteFromDatabasebyId('ideas', req.idea.id);
+        res.status(204).send('idea deleted')
     }
 })
 
