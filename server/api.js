@@ -1,5 +1,5 @@
 const express = require('express');
-const { getFromDatabaseById, addToDatabase, createMinion } = require('./db');
+const { getFromDatabaseById, addToDatabase, updateInstanceInDatabase } = require('./db');
 const apiRouter = express.Router();
 const { getAllFromDatabase } = require('./db');
 
@@ -39,6 +39,19 @@ apiRouter.post('/minions', (req, res, next) => {
     }
 
     res.status(500).send('error in minion typing')
+})
+
+// updating a minion by id
+apiRouter.put('/minions/:minionId', (req, res, next) => {
+    if (req.minion) {
+        const updatedMinion = req.minion;
+        updatedMinion.name = req.body.name;
+        updatedMinion.title = req.body.title;
+        updatedMinion.salary = req.body.salary;
+
+        const returnMinion = updateInstanceInDatabase('minions', updatedMinion);
+        res.send(returnMinion);
+    }
 })
 
 module.exports = apiRouter;
