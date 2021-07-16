@@ -1,6 +1,7 @@
 const express = require('express');
 const ideasRouter = express.Router();
 const { getAllFromDatabase, getFromDatabaseById, addToDatabase, updateInstanceInDatabase, deleteAllFromDatabase } = require('./db');
+const minionRouter = require('./minions');
 
 // params 
 ideasRouter.param('ideaId', (req, res, next, id) => {
@@ -39,6 +40,20 @@ ideasRouter.post('/', (req, res, next) => {
         return res.status(201).send(newIdea)
     }
     res.status(500).send('error in idea typing')
+});
+
+// put idea by id
+ideasRouter.put('/:ideaId', (req, res, next) => {
+    if (req.idea) {
+        const updatedIdea = req.idea;
+        updatedIdea.name = req.body.name;
+        updatedIdea.description = req.body.description;
+        updatedIdea.numWeeks = req.body.numWeeks;
+        updatedIdea.weeklyRevenue = req.body.weeklyRevenue;
+
+        const returnIdea = updateInstanceInDatabase('ideas', updatedIdea);
+        res.send(returnIdea);
+    }
 })
 
 module.exports = ideasRouter;
